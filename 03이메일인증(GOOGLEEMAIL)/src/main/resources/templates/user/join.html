@@ -40,7 +40,7 @@
 
                                 <div style="display:flex;">
                                     <input name="username" class="form-control username"  placeholder="이메일 계정 입력" type="email" required>
-                                    <button type="button" onclick="isValid()" class="btn btn-secondary email_auth_btn" data-bs-toggle="modal" data-bs-target="#exampleModal" style="width:80px;margin-left:5px;">
+                                    <button type="button" onclick="emailAuthFunc()" class="btn btn-secondary email_auth_btn" data-bs-toggle="modal" data-bs-target="#exampleModal"  style="width:80px;margin-left:5px;">
                                         인증
                                     </button>
                                 </div>
@@ -129,25 +129,41 @@
 
 
     <script>
-        const isValid=() =>{
+     const isValid=() => {
+        //유효성 체크 username, password, phone..
 
-            //유효성 체크 username,password,phone
-            const joinform =  document.joinform;
+        const joinform = document.joinform;
+        let regexUsername = new RegExp("[a-z0-9]+@[a-z]+\\.[a-z]{2,3}")
+        if(joinform.username.value.trim()===""){
+            alert("email주소를 입력하세요");
+            return false;
+        }else if(!regexUsername.test(joinform.username.value.trim())){
+            alert("이메일 형식으로 입력해주세요");
+            return false;
+        }
+        return true;
+    };
+    const emailAuthFunc = function (){
+        if (isValid()){
+            //서버 이메일 전송 요청 GET - 비동기 요청
+            const email = document.joinform.username.value;
+            axios.get('/user/sendMail/' + email)
+                .then(res=>{
+                    console.log(res);
 
-            //이메일 정규표현
-            let regexUsername = new RegExp('[a-z0-9]+@[a-z]+\.[a-z]{2,3}');
 
-            if(joinform.username.value.trim()===""){
-                alert("email주소를 입력하세요..");
-                location.href="/user/join";
-                return ;
-            }else if(!regexUsername.test(joinform.username.value.trim())){
-                alert("example@example.com 형태로 입력해주세요");
-                location.href="/user/join";
-                return ;
-            }
 
-        };
+                })
+                .catch(err=>{
+                    console.log(err);
+                });
+        }
+        else
+        {
+            location.href="/user/join";
+        }
+
+    }
 
     </script>
     <!-- axios -->

@@ -3,6 +3,7 @@ package com.example.demo.controller;
 import com.example.demo.domain.dto.CertificationDto;
 import com.example.demo.domain.dto.UserDto;
 import com.example.demo.domain.service.UserService;
+import com.example.demo.properties.EmailAuthProperties;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -12,6 +13,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
@@ -32,7 +35,8 @@ public class UserController {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-
+    @Autowired
+    private JavaMailSender javaMailSender;
 
     @GetMapping(value = "/myinfo" )
     public void user(Authentication authentication , Model model){
@@ -85,6 +89,16 @@ public class UserController {
         return "user/certification";
     }
 
+
+
+    @GetMapping("/findId")
+    public void findId(){log.info("GET /user/findId");}
+    @GetMapping("/findPw")
+    public void findPw(){log.info("GET /user/findPw");}
+
+
+
+    //---------------------
     @PostMapping(value = "/certification",consumes = MediaType.APPLICATION_JSON_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<JSONObject>  certification_post(@RequestBody CertificationDto params, HttpServletResponse response) throws IOException {
         log.info("POST /user/certification.." + params);
@@ -103,8 +117,25 @@ public class UserController {
 
     }
 
-    @GetMapping("/findId")
-    public void findId(){log.info("GET /user/findId");}
-    @GetMapping("/findPw")
-    public void findPw(){log.info("GET /user/findPw");}
+    @GetMapping("/sendMail/{email}")
+    @ResponseBody
+    public ResponseEntity<JSONObject> sendmailFunc(@PathVariable("email") String email){
+        log.info("GET /user/sendMail.." + email);
+        //넣을 값 지정
+        String code = EmailAuthProperties.planText;
+
+        passwordEncoder.encode(code);
+        //메일 메시지 만들기
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setTo(email);
+        message.setSubject("[EMAIL AUTHENTICATION] CODE ");
+        message.setText(passwordEncoder.encode(code));
+
+        javaMailSender.send(message);
+
+
+        return new ResponseEntity(new JSONObject().put("success", true) , HttpStatus.OK);
+    }
+
+
 }
