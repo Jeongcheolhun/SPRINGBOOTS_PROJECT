@@ -130,11 +130,9 @@ public class UserController {
         message.setTo(email);
         message.setSubject("[EMAIL AUTHENTICATION] CODE ");
         message.setText(passwordEncoder.encode(code));
-        
-//        //내가
-//        public void send() {
-//            this.javaMailSender.setFrom("hoon2525@gmail.com");
-//        }
+
+        message.setFrom("hoon2525@gmail.com");
+
 
         javaMailSender.send(message);
 

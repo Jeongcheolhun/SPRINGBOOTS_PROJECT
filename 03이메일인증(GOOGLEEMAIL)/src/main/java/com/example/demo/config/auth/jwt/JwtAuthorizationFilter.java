@@ -27,6 +27,8 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
     private final UserRepository memberRepository;
     private final JwtTokenProvider jwtTokenProvider;
 
+
+
     public JwtAuthorizationFilter(
             UserRepository memberRepository,
             JwtTokenProvider jwtTokenProvider
