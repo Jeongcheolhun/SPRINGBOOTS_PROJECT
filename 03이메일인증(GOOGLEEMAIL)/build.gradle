@@ -63,6 +63,11 @@ dependencies {
 	//DEVTOOLS
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'
 
+	// Spring Boot Starter for Mail
+	implementation 'org.springframework.boot:spring-boot-starter-mail'
+
+	implementation 'jakarta.validation:jakarta.validation-api:3.0.2'
+
 	//TEST
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'org.springframework.security:spring-security-test'
