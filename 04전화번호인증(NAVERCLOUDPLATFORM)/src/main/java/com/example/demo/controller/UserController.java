@@ -22,8 +22,10 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
+import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 
+import java.beans.PropertyEditorSupport;
 import java.io.IOException;
 import java.util.Arrays;
 
@@ -42,6 +44,14 @@ public class UserController {
 
     @Autowired
     private JavaMailSender javaMailSender;
+
+
+    @InitBinder
+    public void dataBinder(WebDataBinder dataBinder){
+        log.info("databinder obj : " + dataBinder);
+        //dataBinder.registerCustomEditor(String.class, new PhoneNumberEditor());
+        dataBinder.registerCustomEditor(String.class, "phone", new PhoneNumberEditor());
+    }
 
     @GetMapping(value = "/myinfo" )
     public void user(Authentication authentication , Model model){
@@ -148,6 +158,8 @@ public class UserController {
         message.setSubject("[EMAIL AUTHENTICATION] CODE ");
         message.setText(passwordEncoder.encode(code));
 
+        message.setFrom("hoon2525@gmail.com");
+
         javaMailSender.send(message);
 
 
@@ -175,3 +187,25 @@ public class UserController {
     }
 
 }
+
+
+
+class PhoneNumberEditor extends PropertyEditorSupport {
+
+    @Override
+    public String getAsText() {
+        System.out.println("PhoneNumberEditor's getAsText()...text : " + getValue());
+        return (String)getValue();
+    }
+
+    @Override
+    public void setAsText(String text) throws IllegalArgumentException {
+        System.out.println("PhoneNumberEditor's setAsText()...text : " + text);
+        String formattedText = text.replaceAll("-", "");
+        setValue(formattedText);
+    }
+}
+
+
+
+
