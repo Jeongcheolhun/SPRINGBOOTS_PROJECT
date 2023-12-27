@@ -148,8 +148,6 @@ public class UserController {
         message.setSubject("[EMAIL AUTHENTICATION] CODE ");
         message.setText(passwordEncoder.encode(code));
 
-        message.setFrom("hoon2525@gmail.com");
-
         javaMailSender.send(message);
 
 
