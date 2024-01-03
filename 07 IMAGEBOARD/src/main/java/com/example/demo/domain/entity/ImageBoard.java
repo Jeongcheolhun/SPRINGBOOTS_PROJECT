@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.apache.tomcat.jni.FileInfo;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
@@ -23,6 +24,7 @@ public class ImageBoard {
     private String seller;
     private String productname;
     private String category;
+    private String price;
     private String brandname;
     private String itemdetals;
     private String amount;
@@ -30,6 +32,6 @@ public class ImageBoard {
 
     private LocalDateTime createAt;
 
-    @ElementCollection
+
     private List<String> files;
 }
